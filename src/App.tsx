@@ -5,16 +5,10 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import { createReducer } from 'typesafe-actions';
 import { MiceInput } from './components/MiceInput';
+import { reducer } from './redux/Redux';
+import { MiceTable } from './components/MiceTable';
 
-interface State {
-  value: number;
-}
-type Action = { type: 'dupa' };
-const initialState = { value: 0 };
-const reducer = createReducer<State, Action>(initialState)
-  .handleType('dupa', (state, action) => state);
 const store = createStore(reducer);
 
 function App() {
@@ -31,6 +25,11 @@ function App() {
         <Row>
           <Col>
             <MiceInput></MiceInput>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <MiceTable />
           </Col>
         </Row>
 

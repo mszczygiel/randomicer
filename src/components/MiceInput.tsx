@@ -1,11 +1,10 @@
 import { connect } from "react-redux";
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, Dispatch } from "react";
+import { Action, miceLoaded } from "../redux/Redux";
 
-interface OwnProps {
+type Props = typeof dispatchProps;
 
-}
-
-const MiceInputComponent: React.FC<OwnProps> = props => {
+const MiceInputComponent: React.FC<Props> = props => {
     function onLoad(ev: ProgressEvent<FileReader>): any {
         console.log(ev.target?.result);
     }
@@ -25,4 +24,8 @@ const MiceInputComponent: React.FC<OwnProps> = props => {
     );
 };
 
-export const MiceInput = connect(null, null)(MiceInputComponent);
+const dispatchProps = {
+    onLoaded: miceLoaded
+};
+
+export const MiceInput = connect(undefined, dispatchProps)(MiceInputComponent);
