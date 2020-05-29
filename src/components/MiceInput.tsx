@@ -13,7 +13,6 @@ const MiceInputComponent: React.FC<Props> = props => {
         }
     }
     function handleUpload(event: ChangeEvent<HTMLInputElement>): void {
-        console.log(event.target.files);
         const file = event.target.files?.item(0);
         if (file) {
             const reader = new FileReader();
