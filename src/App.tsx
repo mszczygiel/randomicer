@@ -9,7 +9,7 @@ import { MiceInput } from './components/MiceInput';
 import { reducer } from './redux/Redux';
 import { MiceTable } from './components/MiceTable';
 
-const store = createStore(reducer);
+const store = createStore(reducer, (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__());
 
 function App() {
   return (

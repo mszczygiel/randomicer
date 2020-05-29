@@ -20,4 +20,6 @@ const initialState: State = {
 
 export type Action = ReturnType<typeof miceLoaded>;
 
-export const reducer = createReducer<State, Action>(initialState);
+export const reducer = createReducer<State, Action>(initialState).handleType(MICE_LOADED, (state, action) => {
+    return { ...state, mice: action.payload.mice };
+});

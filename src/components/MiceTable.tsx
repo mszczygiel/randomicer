@@ -14,7 +14,7 @@ const MiceTableComponent: React.FC<Props> = props => {
             </tr>
         </thead>
         <tbody>
-            {props.mice.map(m => (<tr>
+            {props.mice.map(m => (<tr key={m.id}>
                 <td>{m.id}</td>
                 <td>{m.tumors.length}</td>
                 <td>{m.tumorsVolume()}</td>

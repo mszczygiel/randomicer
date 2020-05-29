@@ -1,12 +1,16 @@
 import { connect } from "react-redux";
-import React, { ChangeEvent, Dispatch } from "react";
-import { Action, miceLoaded } from "../redux/Redux";
+import React, { ChangeEvent } from "react";
+import { miceLoaded } from "../redux/Redux";
+import { parseCSV } from "../domain/Parser";
 
 type Props = typeof dispatchProps;
 
 const MiceInputComponent: React.FC<Props> = props => {
     function onLoad(ev: ProgressEvent<FileReader>): any {
-        console.log(ev.target?.result);
+        if (typeof ev.target?.result === 'string') {
+            const mice = parseCSV(ev.target.result);
+            props.onLoaded({ mice: mice });
+        }
     }
     function handleUpload(event: ChangeEvent<HTMLInputElement>): void {
         console.log(event.target.files);
