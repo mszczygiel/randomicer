@@ -1,4 +1,4 @@
-import { Distribution, Group } from "./Randomizer";
+import { Distribution, Group, randomize } from "./Randomizer";
 import { Mouse, Tumor } from "./Mouse";
 
 const m1 = new Mouse('1', [new Tumor(1, 2)]);
@@ -14,6 +14,29 @@ describe('Distribution', () => {
 
         const distribution = new Distribution(groups);
 
-        expect(distribution.penalty()).resolves.toBeCloseTo(249.954);
+        expect(distribution.penalty()).toBeCloseTo(249.954);
+    });
+});
+
+describe('randomize', () => {
+    test('sample randomization', async () => {
+        const mice = [m1, m2, m3, m4, m5, m6];
+
+        const distribution = await (randomize(mice, { numberOfGroups: 2, micePerGroup: 3 }) as Promise<Distribution>);
+        expect(distribution.penalty()).toBeCloseTo(52.7653);
+        expect(distribution.groups).toHaveLength(2);
+        expect(distribution.groups[0].mice).toHaveLength(3);
+        expect(distribution.groups[1].mice).toHaveLength(3);
+        const miceIds = distribution.groups.flatMap(g => g.mice).map(m => m.id);
+        expect(miceIds.sort()).toEqual(["1", "2", "3", "4", "5", "6"]);
+    });
+
+    test('use only allowed number of mice', async () => {
+        const mice = [m1, m2, m3, m4, m5, m6];
+
+        const distribution = await (randomize(mice, { numberOfGroups: 2, micePerGroup: 2 }) as Promise<Distribution>);
+        expect(distribution.groups).toHaveLength(2);
+        expect(distribution.groups[0].mice).toHaveLength(2);
+        expect(distribution.groups[1].mice).toHaveLength(2);
     });
 });
