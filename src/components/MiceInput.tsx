@@ -21,7 +21,7 @@ const MiceInputComponent: React.FC<Props> = props => {
         }
     }
     return (
-        <div>
+        <div className="input-group">
             <input type="file" accept=".txt,.csv,text/plain,text/csv" onChange={handleUpload}></input>
         </div>
     );
