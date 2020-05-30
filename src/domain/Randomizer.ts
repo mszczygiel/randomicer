@@ -66,10 +66,10 @@ export function randomize(mice: Mouse[], settings: RandomizationSettings): Promi
         .filter(mouse => settings.maxTumorsVolume == null ? true : mouse.tumorsVolume() <= settings.maxTumorsVolume);
     const expectedMiceCount = settings.micePerGroup * settings.numberOfGroups;
     if (expectedMiceCount > qualifiedMice.length) {
-        return new RandomizationError(`Number of mice (${qualifiedMice.length}) is less than ${expectedMiceCount}`);
+        return new RandomizationError(`Number of mice meeting criteria (${qualifiedMice.length}) is less than number of groups x number of mice per group (${expectedMiceCount})`);
     }
     const gen: GenerateOptions<Mouse[], Mouse[]> = {
-        initialState: [...mice],
+        initialState: [...qualifiedMice],
         iterate: p => shuffle(p),
         resultSelector: m => m
     };
