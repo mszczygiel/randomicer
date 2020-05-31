@@ -5,7 +5,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import { MiceInput } from './components/MiceInput';
 import { reducer } from './redux/Redux';
 import { MiceTable } from './components/MiceTable';
 import { Randomization } from './components/Randomization';
@@ -17,20 +16,12 @@ function App() {
     <Provider store={store}>
       <Container>
         <Row>
-          <Col />
-          <Col>
+          <Col className="text-center">
             <h1 className="text-primary">Randomicer</h1>
           </Col>
-          <Col />
         </Row>
-        <Row>
-          <Col>
-            <MiceInput />
-          </Col>
-          <Col>
-            <Randomization />
-          </Col>
-        </Row>
+        <Randomization />
+        <hr />
         <Row>
           <Col>
             <MiceTable />
