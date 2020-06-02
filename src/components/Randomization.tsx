@@ -2,15 +2,18 @@ import { connect } from "react-redux";
 import React, { useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
 import { MiceInput } from "./MiceInput";
+import { State } from "../redux/Redux";
 
-type Props = undefined;
+type Props = ReturnType<typeof mapStateToProps>;
 
 const RandomizationComponent: React.FC<Props> = props => {
     const [noOfGroups, setNoOfGroups] = useState(2);
     const [micePerGroup, setMicePerGroup] = useState(2);
     const [minTumorVolume, setMinTumorVolume] = useState<number | undefined>(undefined);
     const [maxTumorVolume, setMaxTumorVolume] = useState<number | undefined>(undefined);
+    const randomizationPossible = props.mice.length > 1;
 
     function randomize() {
         console.log(noOfGroups, micePerGroup, minTumorVolume, maxTumorVolume);
@@ -95,15 +98,20 @@ const RandomizationComponent: React.FC<Props> = props => {
             </Row>
             <Row className="mt-3">
                 <Col className="text-center">
-                    <button
-                        type="button"
+                    <Button
+                        disabled={!randomizationPossible}
                         className="btn btn-primary"
-                        onClick={e => randomize()}>
+                        onClick={(e: any) => randomize()}
+                    >
                         Randomize
-                    </button>
+                    </Button>
                 </Col>
             </Row>
         </>);
 };
 
-export const Randomization = connect(undefined, undefined)(RandomizationComponent);
+const mapStateToProps = (state: State) => ({
+    mice: state.mice
+});
+
+export const Randomization = connect(mapStateToProps)(RandomizationComponent);
