@@ -8,6 +8,7 @@ import { createStore } from 'redux';
 import { reducer } from './redux/Redux';
 import { MiceTable } from './components/MiceTable';
 import { Randomization } from './components/Randomization';
+import { RandomizationResult } from './components/RandomizationResult';
 
 const store = createStore(reducer, (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__());
 
@@ -29,6 +30,7 @@ function App() {
           </Col>
           <Col>
             <h3 className="text-center">Output</h3>
+            <RandomizationResult></RandomizationResult>
           </Col>
         </Row>
 
