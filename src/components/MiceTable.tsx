@@ -1,14 +1,15 @@
 import { connect } from "react-redux";
 import { State } from "../redux/Redux";
 import React from "react";
+import Table from "react-bootstrap/Table";
 
 type Props = ReturnType<typeof mapStateToProps>
 
 const MiceTableComponent: React.FC<Props> = props => {
-    return (<table className="table">
+    return (<Table hover size="sm" >
         <thead>
             <tr>
-                <th>id</th>
+                <th>mouse id</th>
                 <th>tumors</th>
                 <th>volume</th>
             </tr>
@@ -20,7 +21,7 @@ const MiceTableComponent: React.FC<Props> = props => {
                 <td>{m.tumorsVolume()}</td>
             </tr>))}
         </tbody>
-    </table>);
+    </Table>);
 };
 
 const mapStateToProps = (state: State) => (
