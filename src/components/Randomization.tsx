@@ -3,20 +3,42 @@ import React, { useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import Alert from "react-bootstrap/Alert";
 import { MiceInput } from "./MiceInput";
-import { State } from "../redux/Redux";
+import { State, setDistribution } from "../redux/Redux";
+import { randomize, RandomizationError } from "../domain/Randomizer";
 
-type Props = ReturnType<typeof mapStateToProps>;
+type Props = ReturnType<typeof mapStateToProps> & typeof dispatchProps;
 
 const RandomizationComponent: React.FC<Props> = props => {
     const [noOfGroups, setNoOfGroups] = useState(2);
     const [micePerGroup, setMicePerGroup] = useState(2);
     const [minTumorVolume, setMinTumorVolume] = useState<number | undefined>(undefined);
     const [maxTumorVolume, setMaxTumorVolume] = useState<number | undefined>(undefined);
+    const [errorMessage, setErrorMessage] = useState<string>("");
     const randomizationPossible = props.mice.length > 1;
 
-    function randomize() {
-        console.log(noOfGroups, micePerGroup, minTumorVolume, maxTumorVolume);
+    function showError() {
+        if (errorMessage.trim().length > 0) {
+            return <Alert variant="danger">{errorMessage}</Alert>
+        } else {
+            return null;
+        }
+    }
+
+    function runRandomization() {
+        const res = randomize(props.mice, {
+            micePerGroup: micePerGroup,
+            numberOfGroups: noOfGroups,
+            minTumorsVolume: minTumorVolume,
+            maxTumorsVolume: maxTumorVolume
+        });
+
+        if (res instanceof RandomizationError) {
+            setErrorMessage(res.message);
+        } else if (res instanceof Promise) {
+            res.then(dist => props.setRandomizationResult(dist));
+        }
     }
 
     return (
@@ -96,12 +118,17 @@ const RandomizationComponent: React.FC<Props> = props => {
                     </div>
                 </Col>
             </Row>
+            <Row>
+                <Col>
+                    {showError()}
+                </Col>
+            </Row>
             <Row className="mt-3">
                 <Col className="text-center">
                     <Button
                         disabled={!randomizationPossible}
                         className="btn btn-primary"
-                        onClick={(e: any) => randomize()}
+                        onClick={() => runRandomization()}
                     >
                         Randomize
                     </Button>
@@ -114,4 +141,8 @@ const mapStateToProps = (state: State) => ({
     mice: state.mice
 });
 
-export const Randomization = connect(mapStateToProps)(RandomizationComponent);
+const dispatchProps = {
+    setRandomizationResult: setDistribution
+};
+
+export const Randomization = connect(mapStateToProps, dispatchProps)(RandomizationComponent);
