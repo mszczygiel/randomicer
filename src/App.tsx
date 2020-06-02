@@ -24,7 +24,11 @@ function App() {
         <hr />
         <Row>
           <Col>
+            <h3 className="text-center">Input</h3>
             <MiceTable />
+          </Col>
+          <Col>
+            <h3 className="text-center">Output</h3>
           </Col>
         </Row>
 
