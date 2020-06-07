@@ -28,8 +28,8 @@ function App() {
             <h3 className="text-center">Input</h3>
             <MiceTable />
           </Col>
-          <Col>
-            <h3 className="text-center">Output</h3>
+          <Col className="text-center">
+            <h3>Output</h3>
             <RandomizationResult></RandomizationResult>
           </Col>
         </Row>
