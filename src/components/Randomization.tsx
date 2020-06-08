@@ -5,7 +5,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
 import { MiceInput } from "./MiceInput";
-import { State, setDistribution } from "../redux/Redux";
+import { State, setDistribution, randomizationStarted } from "../redux/Redux";
 import { randomize, RandomizationError } from "../domain/Randomizer";
 
 type Props = ReturnType<typeof mapStateToProps> & typeof dispatchProps;
@@ -16,7 +16,7 @@ const RandomizationComponent: React.FC<Props> = props => {
     const [minTumorVolume, setMinTumorVolume] = useState<number | undefined>(undefined);
     const [maxTumorVolume, setMaxTumorVolume] = useState<number | undefined>(undefined);
     const [errorMessage, setErrorMessage] = useState<string>("");
-    const randomizationPossible = props.mice.length > 1;
+    const randomizationPossible = props.mice.length > 1 && !props.randomizationRunning;
 
     function showError() {
         if (errorMessage.trim().length > 0) {
@@ -37,7 +37,16 @@ const RandomizationComponent: React.FC<Props> = props => {
         if (res instanceof RandomizationError) {
             setErrorMessage(res.message);
         } else if (res instanceof Promise) {
+            props.randomizationStarted();
             res.then(dist => props.setRandomizationResult(dist));
+        }
+    }
+
+    function progressIndicator() {
+        if (props.randomizationRunning) {
+            return (<span className="spinner-border spinner-border-sm" role="status"></span>)
+        } else {
+            return null;
         }
     }
 
@@ -130,6 +139,7 @@ const RandomizationComponent: React.FC<Props> = props => {
                         className="btn btn-primary"
                         onClick={() => runRandomization()}
                     >
+                        {progressIndicator()}
                         Randomize
                     </Button>
                 </Col>
@@ -138,11 +148,13 @@ const RandomizationComponent: React.FC<Props> = props => {
 };
 
 const mapStateToProps = (state: State) => ({
-    mice: state.mice
+    mice: state.mice,
+    randomizationRunning: state.isRunningRandomization
 });
 
 const dispatchProps = {
-    setRandomizationResult: setDistribution
+    setRandomizationResult: setDistribution,
+    randomizationStarted: randomizationStarted
 };
 
 export const Randomization = connect(mapStateToProps, dispatchProps)(RandomizationComponent);

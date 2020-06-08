@@ -61,7 +61,7 @@ export class RandomizationError {
 };
 
 export function randomize(mice: Mouse[], settings: RandomizationSettings): Promise<Distribution> | RandomizationError {
-    const numberOfIterations = max(1000, min(mice.length * mice.length, 20000));
+    const numberOfIterations = max(1000, min(mice.length * mice.length, 10000));
     const qualifiedMice = mice.filter(mouse => settings.minTumorsVolume == null ? true : mouse.tumorsVolume() >= settings.minTumorsVolume)
         .filter(mouse => settings.maxTumorsVolume == null ? true : mouse.tumorsVolume() <= settings.maxTumorsVolume);
     const expectedMiceCount = settings.micePerGroup * settings.numberOfGroups;
@@ -71,17 +71,24 @@ export function randomize(mice: Mouse[], settings: RandomizationSettings): Promi
     const gen: GenerateOptions<Mouse[], Mouse[]> = {
         initialState: [...qualifiedMice],
         iterate: p => shuffle(p),
-        resultSelector: m => m
+        resultSelector: m => m,
+        scheduler: rxjs.asyncScheduler
     };
-    return rxjs.generate(gen).pipe(
-        take(numberOfIterations),
-        mergeMap(mice => rxjs.from(mice)
+
+    function createDistribution(mice: Mouse[]) {
+        const distribution = rxjs.from(mice)
             .pipe(
                 take(expectedMiceCount),
                 bufferCount(settings.micePerGroup),
                 toArray(),
                 map(buffered => buffered.map(g => new Group(g))),
-                map(groups => new Distribution(groups)))),
+                map(groups => new Distribution(groups)))
+        return distribution;
+    }
+
+    return rxjs.generate(gen).pipe(
+        take(numberOfIterations),
+        mergeMap(mice => createDistribution(mice)),
         rxMin((d1, d2) => d1.penalty() - d2.penalty())
     ).toPromise();
 }
