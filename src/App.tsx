@@ -9,6 +9,7 @@ import { reducer } from './redux/Redux';
 import { MiceTable } from './components/MiceTable';
 import { Randomization } from './components/Randomization';
 import { RandomizationResult } from './components/RandomizationResult';
+import { Help } from './components/Help';
 
 const store = createStore(reducer, (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__());
 
@@ -16,9 +17,14 @@ function App() {
   return (
     <Provider store={store}>
       <Container>
-        <Row>
+        <Row className="align-items-center">
           <Col className="text-center">
             <h1 className="text-primary">Randomicer</h1>
+          </Col>
+        </Row>
+        <Row>
+          <Col sm={{offset: 6}} className="text-right">
+            <Help></Help>
           </Col>
         </Row>
         <Randomization />
