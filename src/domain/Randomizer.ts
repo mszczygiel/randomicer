@@ -1,5 +1,5 @@
 import { Mouse } from "./Mouse";
-import { abs, mean, median, std, min, max } from "mathjs";
+import { abs, mean, median, std, min, max, sum } from "mathjs";
 import * as rxjs from 'rxjs';
 import { map, mergeMap, reduce, min as rxMin, take, bufferCount, toArray } from "rxjs/operators";
 import { GenerateOptions } from "rxjs/internal/observable/generate";
@@ -42,11 +42,22 @@ export class Distribution {
 
     public penalty(): number {
         let res = 0;
+        const meanNorm = sum(this.groups.map((g) => g.tumorsMean()));
+        const medianNorm = sum(this.groups.map((g) => g.tumorsMedian()));
+        const stdNorm = max(1, sum(this.groups.map((g) => g.tumorsStdDev())));
+
+        function distance(g1: Group, g2: Group) {
+            const mean = abs(g1.tumorsMean() - g2.tumorsMean()) / meanNorm;
+            const med = abs(g1.tumorsMedian() - g2.tumorsMedian()) / medianNorm;
+            const std = abs(g1.tumorsStdDev() - g2.tumorsStdDev()) / stdNorm;
+            return med * 2 + mean + std;
+        }
+
         rxjs.from(this.groups).pipe(
             mergeMap(g => rxjs.from(this.groups)
                 .pipe(map(g1 => [g, g1]))))
             .pipe(
-                reduce((acc, [g1, g2]) => acc + abs(g1.tumorsMean() - g2.tumorsMean()) + abs(g1.tumorsMedian() - g2.tumorsMedian()), 0))
+                reduce((acc, [g1, g2]) => acc + distance(g1, g2), 0))
             .subscribe(v => { res = v });
         return res;
     }

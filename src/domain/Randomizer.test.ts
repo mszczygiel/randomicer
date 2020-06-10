@@ -14,7 +14,7 @@ describe('Distribution', () => {
 
         const distribution = new Distribution(groups);
 
-        expect(distribution.penalty()).toBeCloseTo(249.954);
+        expect(distribution.penalty()).toBeCloseTo(9.217);
     });
 });
 
@@ -25,7 +25,7 @@ describe('randomize', () => {
     test('sample randomization', async () => {
         const distribution = await (randomize(mice, { numberOfGroups: 2, micePerGroup: 3 }) as Promise<Distribution>);
 
-        expect(distribution.penalty()).toBeCloseTo(52.7653);
+        expect(distribution.penalty()).toBeCloseTo(5.173);
         expect(distribution.groups).toHaveLength(2);
         expect(distribution.groups[0].mice).toHaveLength(3);
         expect(distribution.groups[1].mice).toHaveLength(3);
