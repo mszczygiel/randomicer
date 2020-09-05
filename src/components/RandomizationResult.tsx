@@ -28,7 +28,7 @@ interface DownloadDistributionComponentProps {
 };
 
 const DownloadDistributionComponent: React.FC<DownloadDistributionComponentProps> = props => {
-    const symbols = ["_ _", "_ o", "o _", "o o", "_ oo", "oo _", "oo oo", "o oo", "oo o"];
+    const symbols = ["_ _", "o _", "_ o", "o o", "oo _", "_ oo", "oo oo", "oo o", "o oo"];
     function renderGroup(group: Group, idx: number): string {
         const header = `Sym;LP;TV;NT;G${idx};AVG;${group.tumorsMean()};MED;${group.tumorsMedian()};SD;${group.tumorsStdDev()}`;
         let content = "";
