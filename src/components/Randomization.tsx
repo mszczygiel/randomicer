@@ -7,6 +7,7 @@ import Alert from "react-bootstrap/Alert";
 import { MiceInput } from "./MiceInput";
 import { State, setDistribution, randomizationStarted } from "../redux/Redux";
 import { randomize, RandomizationError } from "../domain/Randomizer";
+import { defaultRandomizationAlgorithm, findAlgorithm, randomizationAlgorithmNames } from "../algorithms/RandomizationAlgorithm";
 
 type Props = ReturnType<typeof mapStateToProps> & typeof dispatchProps;
 
@@ -15,6 +16,7 @@ const RandomizationComponent: React.FC<Props> = props => {
     const [micePerGroup, setMicePerGroup] = useState(2);
     const [minTumorVolume, setMinTumorVolume] = useState<number | undefined>(undefined);
     const [maxTumorVolume, setMaxTumorVolume] = useState<number | undefined>(undefined);
+    const [algorithm, setAlgorithm] = useState(defaultRandomizationAlgorithm)
     const [errorMessage, setErrorMessage] = useState<string>("");
     const randomizationPossible = props.mice.length > 1 && !props.randomizationRunning;
 
@@ -27,12 +29,15 @@ const RandomizationComponent: React.FC<Props> = props => {
     }
 
     function runRandomization() {
-        const res = randomize(props.mice, {
-            micePerGroup: micePerGroup,
-            numberOfGroups: noOfGroups,
+        const res = randomize(props.mice, algorithm,
+            {
+                micePerGroup: micePerGroup,
+                numberOfGroups: noOfGroups
+            }, {
             minTumorsVolume: minTumorVolume,
             maxTumorsVolume: maxTumorVolume
-        });
+        }
+        );
 
         if (res instanceof RandomizationError) {
             setErrorMessage(res.message);
@@ -124,6 +129,22 @@ const RandomizationComponent: React.FC<Props> = props => {
                                     setMaxTumorVolume(e.target.valueAsNumber);
                                 }
                             }}></input>
+                    </div>
+                </Col>
+            </Row>
+            <Row>
+                <Col md="3">
+                    <label htmlFor="algorithm">Algorithm</label>
+                    <div className="input-group">
+                        <select id="algorithm" onChange={
+                            e => {
+                                setAlgorithm(findAlgorithm(e.target.value));
+                            }
+                        }>
+                            {randomizationAlgorithmNames.map(name =>
+                                (<option key={`algorithm-${name}`} className="form-control" value={name}>{name}</option>)
+                            )}
+                        </select>
                     </div>
                 </Col>
             </Row>
