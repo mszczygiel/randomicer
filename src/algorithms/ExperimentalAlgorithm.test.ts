@@ -15,7 +15,7 @@ describe('ExperimentalAlgorithm.penalty', () => {
 
         const distribution = new Distribution(groups);
 
-        expect(ExperimentalAlgorithm.penalty(distribution)).toBeCloseTo(9.217);
+        expect(ExperimentalAlgorithm.penalty(distribution)).toBeCloseTo(6.863);
     });
 });
 
@@ -27,7 +27,7 @@ describe('ExperimentalAlgorithm.randomize', () => {
     test('sample randomization', async () => {
         const distribution = await (algorithm.randomize(mice, { numberOfGroups: 2, micePerGroup: 3 }) as Promise<Distribution>);
 
-        expect(ExperimentalAlgorithm.penalty(distribution)).toBeCloseTo(5.173);
+        expect(ExperimentalAlgorithm.penalty(distribution)).toBeCloseTo(3.858);
         expect(distribution.groups).toHaveLength(2);
         expect(distribution.groups[0].mice).toHaveLength(3);
         expect(distribution.groups[1].mice).toHaveLength(3);

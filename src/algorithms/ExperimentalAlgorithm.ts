@@ -31,13 +31,11 @@ export class ExperimentalAlgorithm implements RandomizationAlgorithm {
         let res = 0;
         const meanNorm = sum(distribution.groups.map((g) => g.tumorsMean()));
         const medianNorm = sum(distribution.groups.map((g) => g.tumorsMedian()));
-        const stdNorm = max(1, sum(distribution.groups.map((g) => g.tumorsStdDev())));
 
         function distance(g1: Group, g2: Group) {
             const mean = abs(g1.tumorsMean() - g2.tumorsMean()) / meanNorm;
             const med = abs(g1.tumorsMedian() - g2.tumorsMedian()) / medianNorm;
-            const std = abs(g1.tumorsStdDev() - g2.tumorsStdDev()) / stdNorm;
-            return med * 2 + mean + std;
+            return med * 2 + mean;
         }
 
         rxjs.from(distribution.groups).pipe(
